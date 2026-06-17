@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="h3 mb-3">{{ "Edit User" if user else "Add User" }}</h1>
+<form method="post" class="content-panel form-panel">
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label class="form-label">Username</label>
+            <input class="form-control" name="username" value="{{ user.username if user else '' }}" required>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Email</label>
+            <input class="form-control" type="email" name="email" value="{{ user.email if user else '' }}" required>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Role</label>
+            <select class="form-select" name="role">
+                {% for role in ["admin", "librarian", "user"] %}
+                <option value="{{ role }}" {% if user and user.role == role %}selected{% endif %}>{{ role|title }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Password</label>
+            <input class="form-control" type="password" name="password" {% if not user %}required{% endif %}>
+            {% if user %}<div class="form-text">Leave blank to keep the current password.</div>{% endif %}
+        </div>
+    </div>
+    <div class="mt-4">
+        <button class="btn btn-primary" type="submit">Save</button>
+        <a class="btn btn-outline-secondary" href="{{ url_for('users.list_users') }}">Cancel</a>
+    </div>
+</form>
+{% endblock %}

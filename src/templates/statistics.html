@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="mb-4">
+    <h1 class="h3 mb-1">Statistics</h1>
+    <p class="text-muted mb-0">Charts based on current books and borrowing activity.</p>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-6">
+        <section class="content-panel">
+            <h2 class="h5">Books Per Category</h2>
+            <canvas id="categoryChart" height="180"></canvas>
+        </section>
+    </div>
+    <div class="col-lg-6">
+        <section class="content-panel">
+            <h2 class="h5">Most Borrowed Books</h2>
+            <canvas id="borrowedChart" height="180"></canvas>
+        </section>
+    </div>
+    <div class="col-12">
+        <section class="content-panel">
+            <h2 class="h5">Monthly Borrowing Activity</h2>
+            <canvas id="monthlyChart" height="90"></canvas>
+        </section>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const categoryLabels = {{ category_labels|tojson }};
+const categoryCounts = {{ category_counts|tojson }};
+const borrowedLabels = {{ most_borrowed_labels|tojson }};
+const borrowedCounts = {{ most_borrowed_counts|tojson }};
+const monthLabels = {{ month_labels|tojson }};
+const monthCounts = {{ month_counts|tojson }};
+
+new Chart(document.getElementById("categoryChart"), {
+    type: "bar",
+    data: { labels: categoryLabels, datasets: [{ label: "Books", data: categoryCounts, backgroundColor: "#2563eb" }] }
+});
+
+new Chart(document.getElementById("borrowedChart"), {
+    type: "bar",
+    data: { labels: borrowedLabels, datasets: [{ label: "Borrows", data: borrowedCounts, backgroundColor: "#16a34a" }] }
+});
+
+new Chart(document.getElementById("monthlyChart"), {
+    type: "line",
+    data: { labels: monthLabels, datasets: [{ label: "Borrow Records", data: monthCounts, borderColor: "#dc2626", tension: 0.25 }] }
+});
+</script>
+{% endblock %}  

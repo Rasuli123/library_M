@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="row w-100 justify-content-center">
+        <div class="col-12" style="max-width: 460px;">
+            
+            <div class="card bg-dark bg-opacity-25 border-secondary border-opacity-25 shadow-lg rounded-4 p-4 p-sm-5 text-light" data-bs-theme="dark">
+                
+                <div class="mb-4 text-start">
+                    <h1 class="h3 fw-bold text-white mb-2">Library Management System</h1>
+                    <p class="text-white-50 small mb-0 opacity-75">Sign in to manage books, members, borrowing, and reports.</p>
+                </div>
+
+                <form method="post" autocomplete="off">
+                    
+                    <div class="mb-4">
+                        <label class="form-label small fw-medium text-white-50" for="username">Username</label>
+                        <input type="text" class="form-control form-control-lg bg-dark bg-opacity-50 text-white border-secondary border-opacity-50 fs-6 py-2.5" id="username" name="username" placeholder="Enter username" required autofocus>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label small fw-medium text-white-50" for="password">Password</label>
+                        <div class="position-relative">
+                            <input type="password" class="form-control form-control-lg bg-dark bg-opacity-50 text-white border-secondary border-opacity-50 fs-6 py-2.5 pe-5" id="password" name="password" placeholder="Enter password" required>
+                            
+                            <button class="btn position-absolute end-0 top-50 translate-middle-y border-0 text-white-50 me-2 py-1 px-2" type="button" id="togglePassword" style="z-index: 5; background: transparent;">
+                                <svg id="eyeOpenIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 4 8 4s3.879.668 5.168 1.957A13 13 0 0 1 14.828 8a13 13 0 0 1-1.66 2.043C11.879 11.332 10.119 12 8 12s-3.879-.668-5.168-1.957A13 13 0 0 1 1.173 8"/>
+                                    <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
+                                </svg>
+                                <svg id="eyeClosedIcon" class="d-none" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a12 12 0 0 0-2.778.32l1.932 1.933A3.5 3.5 0 0 1 8 5.5c1.93 0 3.5 1.57 3.5 3.5 0 .666-.187 1.288-.51 1.821l1.369 1.367zM15.825 14L1.248 1.122 0 2.457 2.31 4.5A13.45 13.45 0 0 0 0 8s3 5.5 8 5.5a12 12 0 0 0 5.311-1.15l2.057 1.815L15.825 14zM4.82 6.71l1.583 1.583c-.027.074-.04.152-.04.23a2.5 2.5 0 0 0 2.5 2.5c.079 0 .157-.014.23-.04l1.583 1.583c-.629.356-1.355.548-2.116.548-2.485 0-4.5-2.015-4.5-4.5 0-.761.192-1.487.548-2.116z"/>
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        <div id="capsWarning" class="text-warning small mt-2 d-none d-flex align-items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="me-1.5" viewBox="0 0 16 16">
+                                <path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.146.146 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.163.163 0 0 1-.054.06.116.116 0 0 1-.066.017H1.146a.115.115 0 0 1-.066-.017.163.163 0 0 1-.054-.06.176.176 0 0 1 .002-.183L7.884 2.073a.147.147 0 0 1 .054-.057zm1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566z"/>
+                                <path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>
+                            </svg>
+                            Caps Lock is ON
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary btn-lg w-100 fs-6 fw-semibold shadow-sm mt-2" type="submit">Login</button>
+                </form>
+
+                {% if show_default_admin_hint %}
+                <div class="mt-4 p-3 border border-secondary border-opacity-25 rounded-3 text-center small">
+                    <span class="text-white-50">Default Admin:</span> 
+                    <span class="badge bg-light bg-opacity-10 text-white border border-secondary border-opacity-50 ms-1">admin</span>
+                    <span class="badge bg-light bg-opacity-10 text-white border border-secondary border-opacity-50">admin123</span>
+                </div>
+                {% endif %}
+
+            </div>
+            
+            <div class="text-center mt-4">
+                <p class="text-white-50 small opacity-50">&copy; {{ current_year or "2026" }} Library Management System</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const passwordInput = document.getElementById('password');
+    const toggleButton = document.getElementById('togglePassword');
+    const eyeOpen = document.getElementById('eyeOpenIcon');
+    const eyeClosed = document.getElementById('eyeClosedIcon');
+    const capsWarning = document.getElementById('capsWarning');
+
+    toggleButton.addEventListener('click', function () {
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            eyeOpen.classList.add('d-none');
+            eyeClosed.classList.remove('d-none');
+        } else {
+            passwordInput.type = 'password';
+            eyeClosed.classList.add('d-none');
+            eyeOpen.classList.remove('d-none');
+        }
+    });
+
+    passwordInput.addEventListener('keyup', function (event) {
+        if (event.getModifierState && event.getModifierState('CapsLock')) {
+            capsWarning.classList.remove('d-none');
+        } else {
+            capsWarning.classList.add('d-none');
+        }
+    });
+    
+    passwordInput.addEventListener('blur', function () {
+        capsWarning.classList.add('d-none');
+    });
+</script>
+{% endblock %}

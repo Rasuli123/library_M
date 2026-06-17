@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="h3 mb-3">{{ "Edit Book" if book else "Add Book" }}</h1>
+<form method="post" class="content-panel form-panel">
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label class="form-label">Title</label>
+            <input class="form-control" name="title" value="{{ book.title if book else '' }}" required>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Author</label>
+            <input class="form-control" name="author" value="{{ book.author if book else '' }}" required>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">ISBN</label>
+            <input class="form-control" name="isbn" value="{{ book.isbn if book else '' }}" required>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Publisher</label>
+            <input class="form-control" name="publisher" value="{{ book.publisher if book else '' }}">
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Year</label>
+            <input class="form-control" type="number" name="year" value="{{ book.year if book and book.year else '' }}">
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Quantity</label>
+            <input class="form-control" type="number" min="0" name="quantity" value="{{ book.quantity if book else 0 }}" required>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Category</label>
+            <select class="form-select" name="category_id" required>
+                {% for category in categories %}
+                <option value="{{ category.id }}" {% if book and book.category_id == category.id %}selected{% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Image URL</label>
+            <input class="form-control" name="image" value="{{ book.image if book else '' }}">
+        </div>
+        <div class="col-12">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" name="description" rows="4">{{ book.description if book else '' }}</textarea>
+        </div>
+    </div>
+    <div class="mt-4">
+        <button class="btn btn-primary" type="submit">Save</button>
+        <a class="btn btn-outline-secondary" href="{{ url_for('books.list_books') }}">Cancel</a>
+    </div>
+</form>
+{% endblock %}  

@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-heading">
+    <div>
+        <p class="eyebrow mb-1">Overview</p>
+        <h1 class="h3 mb-1">Dashboard</h1>
+        <p class="text-muted mb-0">Live summary from the library database.</p>
+    </div>
+    {% if session.get("role") in ["admin", "librarian"] %}
+    <div class="action-strip">
+        <a class="btn btn-primary" href="{{ url_for('books.add_book') }}">Add Book</a>
+        <a class="btn btn-outline-primary" href="{{ url_for('members.add_member') }}">Add Member</a>
+        <a class="btn btn-outline-primary" href="{{ url_for('borrow.borrow_book') }}">Borrow</a>
+    </div>
+    {% endif %}
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md"><div class="metric-card accent"><span>Total Books</span><strong>{{ total_books }}</strong></div></div>
+    <div class="col-md"><div class="metric-card success"><span>Available Books</span><strong>{{ available_books }}</strong></div></div>
+    <div class="col-md"><div class="metric-card warning"><span>Borrowed Books</span><strong>{{ borrowed_books }}</strong></div></div>
+    <div class="col-md"><div class="metric-card"><span>Total Members</span><strong>{{ total_members }}</strong></div></div>
+    <div class="col-md"><div class="metric-card danger"><span>Overdue Books</span><strong>{{ overdue_books }}</strong></div></div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-6">
+        <section class="content-panel h-100">
+            <div class="panel-title-row">
+                <h2 class="h5 mb-0">Due Soon</h2>
+                <a class="btn btn-sm btn-outline-primary" href="{{ url_for('borrow.return_book') }}">Returns</a>
+            </div>
+            <div class="stack-list">
+                {% for record in due_soon_records %}
+                <div class="stack-item">
+                    <div>
+                        <strong>{{ record.book.title }}</strong>
+                        <div class="small text-muted">{{ record.member.name }}</div>
+                    </div>
+                    <span class="status-pill {{ 'danger' if record.is_overdue else 'warning' }}">{{ record.due_date }}</span>
+                </div>
+                {% else %}
+                <div class="empty-state">No books due in the next 7 days.</div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+    <div class="col-lg-6">
+        <section class="content-panel h-100">
+            <div class="panel-title-row">
+                <h2 class="h5 mb-0">Low Stock</h2>
+                <a class="btn btn-sm btn-outline-primary" href="{{ url_for('books.list_books') }}">Books</a>
+            </div>
+            <div class="stack-list">
+                {% for book in low_stock_books %}
+                <div class="stack-item">
+                    <div>
+                        <strong>{{ book.title }}</strong>
+                        <div class="small text-muted">{{ book.category.name }}</div>
+                    </div>
+                    <span class="status-pill {{ 'danger' if book.quantity == 0 else 'warning' }}">{{ book.quantity }} left</span>
+                </div>
+                {% else %}
+                <div class="empty-state">Stock levels look steady.</div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+</div>
+
+<section class="content-panel">
+    <div class="panel-title-row">
+        <h2 class="h5 mb-0">Recent Borrow Records</h2>
+        <a class="btn btn-sm btn-outline-primary" href="{{ url_for('borrow.history') }}">History</a>
+    </div>
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+            <tr>
+                <th>Book</th>
+                <th>Member</th>
+                <th>Borrowed</th>
+                <th>Due</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for record in recent_records %}
+            <tr>
+                <td>{{ record.book.title }}</td>
+                <td>{{ record.member.name }}</td>
+                <td>{{ record.borrow_date }}</td>
+                <td>{{ record.due_date }}</td>
+                <td>
+                    {% if record.is_overdue %}
+                    <span class="status-pill danger">Overdue</span>
+                    {% elif record.status == "returned" %}
+                    <span class="status-pill success">Returned</span>
+                    {% else %}
+                    <span class="status-pill neutral">{{ record.status }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5" class="text-muted">No borrow records yet.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

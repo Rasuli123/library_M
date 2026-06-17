@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ title or "Library Management System" }}</title>
+    <script>
+        if (localStorage.getItem("library-theme") === "dark") {
+            document.documentElement.setAttribute("data-theme", "dark");
+        }
+    </script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+{% if session.get("user_id") %}
+<nav class="navbar navbar-expand-lg app-navbar">
+    <div class="container-fluid">
+        
+        <a class="navbar-brand fw-bold d-flex align-items-center" href="{{ url_for('dashboard.dashboard') }}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="me-2" viewBox="0 0 16 16">
+                <path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m7.5-6.923c-.67.204-1.335.82-1.887 1.855A8 8 0 0 0 5.145 4H7.5zM4.09 4a9.3 9.3 0 0 1 .64-1.539 6.7 6.7 0 0 1 .597-.933A7.03 7.03 0 0 0 2.255 4zm-.582 1H1.661c-.312.842-.485 1.746-.485 2.685 0 .113.008.224.014.335h2.21a19.4 19.4 0 0 1 .108-3.02zM1 8.685c0 .939.173 1.843.485 2.685h1.847c-.047-.352-.08-.713-.101-1.077a21 21 0 0 1-.007-1.608zm.31 3.685h2.2a19.4 19.4 0 0 0 .108 3.02 7.03 7.03 0 0 1-2.308-3.02M4.09 12H7.5v2.923c-.67-.204-1.335-.82-1.887-1.855A8 8 0 0 1 5.145 12zm4.41 2.923c.67-.204 1.335-.82 1.887-1.855A8 8 0 0 0 10.855 12H8.5zm3.41-2.923h2.203a7.03 7.03 0 0 1-2.308 3.02 19.4 19.4 0 0 0 .108-3.02m2.422-1H12.11c-.02.364-.054.725-.101 1.077l-.007.531A21 21 0 0 0 12 11.37h2.422c.312-.842.485-1.746.485-2.685zm0-1c0-.11-.002-.221-.006-.331H12.11a19.4 19.4 0 0 0-.108-3.02h2.21c.312.842.485 1.746.485 2.685zm-3.41-3.685h-2.39V1.077c.67.204 1.335.82 1.887 1.855.224.422.424.94.503 1.068M8.5 5h2.355a9.3 9.3 0 0 1-.64-1.539 6.7 6.7 0 0 1-.597-.933A7.03 7.03 0 0 1 13.745 4H11.5v3H8.5zm0 4h3V8h-3zm0 3h3v2h-3zm-1-3H4.5v1h3zm0-4H4.5v3h3zm0 5H4.5v2h3z"/>
+            </svg>
+            Library System
+        </a>
+        
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link {{ 'active' if request.endpoint == 'dashboard.dashboard' else '' }}" href="{{ url_for('dashboard.dashboard') }}">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link {{ 'active' if request.endpoint and request.endpoint.startswith('books.') else '' }}" href="{{ url_for('books.list_books') }}">Books</a></li>
+                <li class="nav-item"><a class="nav-link {{ 'active' if request.endpoint == 'borrow.history' else '' }}" href="{{ url_for('borrow.history') }}">History</a></li>
+                {% if session.get("role") in ["admin", "librarian"] %}
+                <li class="nav-item"><a class="nav-link {{ 'active' if request.endpoint and request.endpoint.startswith('members.') else '' }}" href="{{ url_for('members.list_members') }}">Members</a></li>
+                <li class="nav-item"><a class="nav-link {{ 'active' if request.endpoint == 'borrow.borrow_book' else '' }}" href="{{ url_for('borrow.borrow_book') }}">Borrow</a></li>
+                <li class="nav-item"><a class="nav-link {{ 'active' if request.endpoint == 'borrow.return_book' else '' }}" href="{{ url_for('borrow.return_book') }}">Return</a></li>
+                {% endif %}
+                <li class="nav-item"><a class="nav-link {{ 'active' if request.endpoint == 'statistics.statistics' else '' }}" href="{{ url_for('statistics.statistics') }}">Statistics</a></li>
+                {% if session.get("role") == "admin" %}
+                <li class="nav-item"><a class="nav-link {{ 'active' if request.endpoint and request.endpoint.startswith('users.') else '' }}" href="{{ url_for('users.list_users') }}">Users</a></li>
+                <li class="nav-item"><a class="nav-link {{ 'active' if request.endpoint == 'logs.logs' else '' }}" href="{{ url_for('logs.logs') }}">Logs</a></li>
+                <li class="nav-item"><a class="nav-link {{ 'active' if request.endpoint and request.endpoint.startswith('database.') else '' }}" href="{{ url_for('database.database_status') }}">Database</a></li>
+                {% endif %}
+            </ul>
+            <div class="nav-account">
+                <div class="form-check form-switch theme-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="themeSwitch" data-theme-toggle>
+                    <label class="form-check-label" for="themeSwitch">Dark</label>
+                </div>
+                <span class="role-badge">{{ session.get("role") }}</span>
+                <span class="username-label">{{ session.get("username") }}</span>
+                <a class="btn btn-outline-light btn-sm" href="{{ url_for('auth.logout') }}">Logout</a>
+            </div>
+        </div>
+    </div>
+</nav>
+{% endif %}
+
+<main class="container app-main py-4">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const themeToggle = document.querySelector("[data-theme-toggle]");
+    if (themeToggle) {
+        themeToggle.checked = document.documentElement.getAttribute("data-theme") === "dark";
+        themeToggle.addEventListener("change", () => {
+            const theme = themeToggle.checked ? "dark" : "light";
+            document.documentElement.setAttribute("data-theme", theme);
+            localStorage.setItem("library-theme", theme);
+        });
+    }
+</script>
+{% block scripts %}{% endblock %}
+</body>
+</html>
